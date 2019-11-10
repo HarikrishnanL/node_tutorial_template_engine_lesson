@@ -12,8 +12,11 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', 'Views');
 
+//exporting controlles 
+const errorControllers = require('./Controllers/error404');
+
 //import Routes file which contain admin routes
-const adminData = require('./Routes /admin');
+const adminRoutes = require('./Routes /admin');
 const shopRoutes = require('./Routes /shop');
 const rootDir = require('./util/path');
 
@@ -45,7 +48,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //     console.log(req.body);
 //     res.redirect('/');
 // });
-app.use('/admin', adminData.routes);// order matters as usual before default middleware,filtering the path by adding the admin segment  
+app.use('/admin', adminRoutes);// order matters as usual before default middleware,filtering the path by adding the admin segment  
 
 // app.use('/', (req, res, next) => {
 //     // console.log("in the another middleware");
@@ -56,11 +59,7 @@ app.use('/admin', adminData.routes);// order matters as usual before default mid
 app.use(shopRoutes);
 
 // now handle the request like 404 not found 
-app.use((req, res, next) => {
-    // res.status(404).send('<h1>page not found </h1>');
-    // res.status(404).sendFile(path.join(rootDir, './', 'Views', 'notfound.html'));
-    res.status(404).render('404', { pageTitle: 'Page Not Found with ejs' });
-});
+app.use(errorControllers.get404);
 // creating server 
 // const server = http.createServer(app);
 // server.listen(3000);
